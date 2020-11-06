@@ -1,12 +1,18 @@
 .nav {
   grid-area: n;
-  background-color: lightblue;
+  background-color: var(--light);
   padding: 20px;
 }
+.item {
+  height: 25px;
+}
 .item a {
-  color: rgb(13, 13, 99);
+  color: #4f515b;
   text-decoration: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+
 }
 .item a.active {
-  color: white;
+  color: var(--indigo);
 }
