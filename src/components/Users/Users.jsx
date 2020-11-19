@@ -71,7 +71,11 @@ let Users = (props) => {
             </NavLink>
           </div>
           <div>
-            <button onClick={() => props.toggleFollow(u.id)}>{u.followed ? "Unfollow" : "Follow"}</button>
+            <button
+              disabled={props.followingInProgress.some(id => id === u.id)}
+              onClick={() => props.onToggleFollow(u.id, u.followed)}>
+              {u.followed ? "Unfollow" : "Follow"}
+            </button>
           </div>
         </span>
         <span>
