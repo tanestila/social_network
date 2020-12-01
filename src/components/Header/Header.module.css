@@ -3,10 +3,6 @@
   background-color: var(--dark);
 }
 
-.header img {
-  width: 20px;
-}
-
 .loginBlock {
   float: right;
   padding: 20px;
@@ -14,4 +10,9 @@
 .loginBlock a {
   color: var(--light);
   text-decoration: none;
+}
+
+.title {
+  padding: 20px 0 20px 20px;
+  font-size: large;
 }

@@ -3,8 +3,8 @@
   display: grid;
   width: 1200px;
   grid-template-areas:
-  "h h"
-  "n c";
+    "h h"
+    "n c";
 
   grid-template-rows: 60px 1fr;
   grid-template-columns: 2fr 10fr;
@@ -12,6 +12,10 @@
 
 .app-wrapper-content {
   grid-area: c;
+}
+
+* {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {

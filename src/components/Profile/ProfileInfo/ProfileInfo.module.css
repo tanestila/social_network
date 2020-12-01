@@ -1,20 +1,43 @@
+h3 {
+  margin: 0;
+  font-size: 20px;
+}
+p,
+span {
+  margin: 8px 0 8px 0;
+  font-size: 14px;
+}
+
+a {
+  text-decoration: none;
+  color: var(--blue);
+}
+
 .descriptionBlock {
-  padding: 10px;
+  padding: 15px;
 }
 
-.box {
-  position: relative;
-  overflow:hidden;
-  width: 100%;
-  height:300px;
+.descriptionBlock {
+  display: flex;
 }
 
-.box img {
-  position: absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width: 100%;
-  height:300px;
-  object-fit:cover;
+.item {
+  margin: 15px;
+}
+
+.descriptionBlock img {
+  width: 250px;
+  height: 250px;
+}
+
+.nameBox {
+  margin-bottom: 15px;
+}
+
+.infoBox {
+  margin-bottom: 15px;
+}
+
+.infoBox p:first-child {
+  font-weight: bold;
 }
