@@ -2,7 +2,7 @@ import React from "react";
 import Preloader from "../../UI/preloader/Preloader";
 import s from "./ProfileInfo.module.css";
 import ProfileStatus from "./ProfileStatus";
-
+import ProfileStatusHooks from "./ProfileStatusHooks";
 const ProfileInfo = (props) => {
   if (!props.profile) {
     return <Preloader />;
@@ -20,7 +20,7 @@ const ProfileInfo = (props) => {
           <div className={s.item}>
             <div className={s.nameBox}>
               <h3>{props.profile.fullName}</h3>
-              <ProfileStatus
+              <ProfileStatusHooks
                 status={props.status}
                 updateStatus={props.updateStatus}
               />

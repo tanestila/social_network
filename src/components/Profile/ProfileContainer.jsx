@@ -10,8 +10,14 @@ import { withRouter } from "react-router-dom";
 
 class ProfileContainer extends React.Component {
   async componentDidMount() {
-    this.props.getProfile(this.props.match.params.userId);
-    this.props.getUserStatus(this.props.match.params.userId);
+    let userId = this.props.match.params.userId
+      ? this.props.match.params.userId
+      : this.props.authorizedUserId;
+    if (!userId) {
+      this.props.history.push("/login");
+    }
+    this.props.getProfile(userId);
+    this.props.getUserStatus(userId);
   }
 
   render() {
@@ -31,6 +37,8 @@ class ProfileContainer extends React.Component {
 let mapStateToProps = (state) => ({
   profile: state.profilePage.profile,
   status: state.profilePage.status,
+  isAuth: state.auth.isAuth,
+  authorizedUserId: state.auth.userId,
 });
 
 export default connect(mapStateToProps, {

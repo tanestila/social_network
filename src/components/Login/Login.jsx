@@ -1,7 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 import { maxLengthCreator, required } from "../../utils/validators";
 import { Input } from "../FormsControls/FormsControls";
+import { loginThunkCreator } from "../../redux/reducer/authReducer";
+import { Redirect } from "react-router-dom";
+import s from "../FormsControls/FormsControls.module.css";
 
 let maxLengthCreator20 = maxLengthCreator(20);
 
@@ -11,8 +15,8 @@ const LoginForm = (props) => {
       <div>
         <Field
           type="text"
-          placeholder="Login"
-          name={"login"}
+          placeholder="Email"
+          name={"email"}
           component={Input}
           validate={[required, maxLengthCreator20]}
         />
@@ -30,6 +34,7 @@ const LoginForm = (props) => {
         <Field type="checkbox" name={"rememberMe"} component={Input} /> Remember
         me
       </div>
+      {props.error && <div className={s.formSummaryError}>{props.error}</div>}
       <div>
         <button>Login</button>
       </div>
@@ -39,10 +44,14 @@ const LoginForm = (props) => {
 
 const LoginReduxForm = reduxForm({ form: "login" })(LoginForm);
 
-const Login = () => {
+const Login = (props) => {
   const onSubmit = (formData) => {
-    console.log(formData);
+    props.login(formData.email, formData.password, formData.rememberMe);
   };
+
+  if (props.isAuth) {
+    return <Redirect to={"/profile"} />;
+  }
 
   return (
     <div>
@@ -51,4 +60,9 @@ const Login = () => {
     </div>
   );
 };
-export default Login;
+
+const mapStateToProps = (state) => ({
+  isAuth: state.auth.isAuth,
+});
+
+export default connect(mapStateToProps, { login: loginThunkCreator })(Login);

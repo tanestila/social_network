@@ -5,6 +5,7 @@ import usersReducer from "./reducer/usersReducer";
 import { reducer as formReducer } from "redux-form";
 import { createStore, combineReducers, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
+import appReducer from "./reducer/appReducer";
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers =
@@ -21,6 +22,7 @@ let reducers = combineReducers({
   dialogsPage: dialogsReducer,
   usersPage: usersReducer,
   form: formReducer,
+  app: appReducer,
 });
 
 let store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));

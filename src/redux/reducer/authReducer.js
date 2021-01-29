@@ -1,3 +1,4 @@
+import { stopSubmit } from "redux-form";
 import { authAPI } from "../../api/api";
 
 const SET_USER_DATA = "SET_USER_DATA";
@@ -14,24 +15,50 @@ const authReducer = (state = initialState, action) => {
     case SET_USER_DATA:
       return {
         ...state,
-        ...action.data,
-        isAuth: true,
+        ...action.payload,
       };
     default:
       return state;
   }
 };
 
-export const setUserData = (userId, email, login) => ({
+export const setUserData = (userId, email, login, isAuth) => ({
   type: SET_USER_DATA,
-  data: { userId, email, login },
+  payload: { userId, email, login, isAuth },
 });
 
-export const loginThunkCreator = () => {
+export const getAuthDataThunkCreator = () => {
   return (dispatch) => {
-    authAPI.me().then((data) => {
+    return authAPI.me().then((data) => {
       if (data.resultCode === 0) {
-        dispatch(setUserData(data.data.id, data.data.email, data.data.login));
+        dispatch(
+          setUserData(data.data.id, data.data.email, data.data.login, true)
+        );
+      }
+    });
+  };
+};
+
+export const loginThunkCreator = (email, password, rememberMe) => {
+  return (dispatch) => {
+    authAPI.login(email, password, rememberMe).then((data) => {
+      if (data.resultCode === 0) {
+        dispatch(getAuthDataThunkCreator());
+      } else {
+        let action = stopSubmit("login", {
+          _error: data.messages.length > 0 ? data.messages[0] : "some error",
+        });
+        dispatch(action);
+      }
+    });
+  };
+};
+
+export const logoutThunkCreator = () => {
+  return (dispatch) => {
+    authAPI.logout().then((data) => {
+      if (data.resultCode === 0) {
+        dispatch(setUserData(null, null, null, false));
       }
     });
   };
