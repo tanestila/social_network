@@ -1,7 +1,6 @@
-import { authAPI } from "../../api/api";
 import { getAuthDataThunkCreator } from "./authReducer";
 
-const SET_INITIALIZED = "SET_INITIALIZED";
+const SET_INITIALIZED = "app/SET_INITIALIZED";
 
 let initialState = {
   initialized: false,
@@ -24,11 +23,9 @@ export const setInitialized = () => ({
 });
 
 export const initializeThunkCreator = () => {
-  return (dispatch) => {
-    let promise = dispatch(getAuthDataThunkCreator());
-    promise.then(() => {
-      dispatch(setInitialized());
-    });
+  return async (dispatch) => {
+    await dispatch(getAuthDataThunkCreator());
+    dispatch(setInitialized());
   };
 };
 

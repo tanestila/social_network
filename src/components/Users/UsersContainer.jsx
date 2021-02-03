@@ -6,7 +6,7 @@ import {
   onToggleFollowThunkCreator,
 } from "../../redux/reducer/usersReducer";
 import Users from "./Users";
-import Preloader from "../UI/preloader/Preloader";
+import Preloader from "../common/preloader/Preloader";
 import { getUsersSelector } from "../../redux/reducer/usersSelectors";
 
 class UsersContainer extends React.Component {

@@ -2,16 +2,16 @@ import React from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 import { maxLengthCreator, required } from "../../utils/validators";
-import { Input } from "../FormsControls/FormsControls";
+import { Input } from "../common/FormsControls/FormsControls";
 import { loginThunkCreator } from "../../redux/reducer/authReducer";
 import { Redirect } from "react-router-dom";
 import s from "../FormsControls/FormsControls.module.css";
 
 let maxLengthCreator20 = maxLengthCreator(20);
 
-const LoginForm = (props) => {
+const LoginForm = ({ handleSubmit, error }) => {
   return (
-    <form onSubmit={props.handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div>
         <Field
           type="text"
@@ -34,7 +34,7 @@ const LoginForm = (props) => {
         <Field type="checkbox" name={"rememberMe"} component={Input} /> Remember
         me
       </div>
-      {props.error && <div className={s.formSummaryError}>{props.error}</div>}
+      {error && <div className={s.formSummaryError}>{error}</div>}
       <div>
         <button>Login</button>
       </div>

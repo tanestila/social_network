@@ -1,10 +1,10 @@
 import { usersAPI } from "../../api/api";
 
-const TOGGLE_FOLLOW = "TOGGLE_FOLLOW";
-const SET_USERS = "SET_USERS";
-const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
-const TOGGLE_IS_FETCHING = "TOGGLE_IS_FETCHING";
-const TOGGLE_IS_FOLLOWING_PROGRESS = "TOGGLE_IS_FOLLOWING_PROGRESS";
+const TOGGLE_FOLLOW = "users/TOGGLE_FOLLOW";
+const SET_USERS = "users/SET_USERS";
+const SET_CURRENT_PAGE = "users/SET_CURRENT_PAGE";
+const TOGGLE_IS_FETCHING = "users/TOGGLE_IS_FETCHING";
+const TOGGLE_IS_FOLLOWING_PROGRESS = "users/TOGGLE_IS_FOLLOWING_PROGRESS";
 
 let initialState = {
   users: [],
@@ -26,6 +26,7 @@ const usersReducer = (state = initialState, action) => {
           }
           return u;
         }),
+        // users: updateObjectInArray( state.users, action.userId, "id", {} )
       };
     case SET_USERS:
       return {
@@ -86,30 +87,31 @@ export const toggleIsFollowingProgress = (isFetching, userId) => ({
 export const getUsersThunkCreator = (currentPage, pageSize) => {
   return async (dispatch) => {
     dispatch(toggleIsFetching(true));
-    await usersAPI.getUsers(currentPage, pageSize).then((data) => {
-      dispatch(setUsers(data.items, data.totalCount));
-      dispatch(toggleIsFetching(false));
-    });
+    let response = await usersAPI.getUsers(currentPage, pageSize);
+    dispatch(setUsers(response.items, response.totalCount));
+    dispatch(toggleIsFetching(false));
   };
+};
+
+const followUnfollowFlow = async (dispatch, apiMethod, userId) => {
+  dispatch(toggleIsFollowingProgress(true, userId));
+  let response = await apiMethod(userId);
+  if (response.resultCode === 0) {
+    dispatch(toggleFollow(userId));
+  }
+  dispatch(toggleIsFollowingProgress(false, userId));
 };
 
 export const onToggleFollowThunkCreator = (userId, follow) => {
   return async (dispatch) => {
-    dispatch(toggleIsFollowingProgress(true, userId));
     if (follow) {
-      await usersAPI.unfollowUser(userId).then((data) => {
-        if (data.resultCode === 0) {
-          dispatch(toggleFollow(userId));
-        }
-        dispatch(toggleIsFollowingProgress(false, userId));
-      });
+      followUnfollowFlow(
+        dispatch,
+        usersAPI.unfollowUser.bind(usersAPI),
+        userId
+      );
     } else {
-      await usersAPI.followUser(userId).then((data) => {
-        if (data.resultCode === 0) {
-          dispatch(toggleFollow(userId));
-        }
-        dispatch(toggleIsFollowingProgress(false, userId));
-      });
+      followUnfollowFlow(dispatch, usersAPI.followUser.bind(usersAPI), userId);
     }
   };
 };

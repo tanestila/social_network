@@ -1,7 +1,7 @@
 import { stopSubmit } from "redux-form";
 import { authAPI } from "../../api/api";
 
-const SET_USER_DATA = "SET_USER_DATA";
+const SET_USER_DATA = "auth/SET_USER_DATA";
 
 let initialState = {
   userId: null,
@@ -28,39 +28,42 @@ export const setUserData = (userId, email, login, isAuth) => ({
 });
 
 export const getAuthDataThunkCreator = () => {
-  return (dispatch) => {
-    return authAPI.me().then((data) => {
-      if (data.resultCode === 0) {
-        dispatch(
-          setUserData(data.data.id, data.data.email, data.data.login, true)
-        );
-      }
-    });
+  return async (dispatch) => {
+    let response = await authAPI.me();
+    if (response.resultCode === 0) {
+      dispatch(
+        setUserData(
+          response.data.id,
+          response.data.email,
+          response.data.login,
+          true
+        )
+      );
+    }
   };
 };
 
 export const loginThunkCreator = (email, password, rememberMe) => {
-  return (dispatch) => {
-    authAPI.login(email, password, rememberMe).then((data) => {
-      if (data.resultCode === 0) {
-        dispatch(getAuthDataThunkCreator());
-      } else {
-        let action = stopSubmit("login", {
-          _error: data.messages.length > 0 ? data.messages[0] : "some error",
-        });
-        dispatch(action);
-      }
-    });
+  return async (dispatch) => {
+    let response = await authAPI.login(email, password, rememberMe);
+    if (response.resultCode === 0) {
+      dispatch(getAuthDataThunkCreator());
+    } else {
+      let action = stopSubmit("login", {
+        _error:
+          response.messages.length > 0 ? response.messages[0] : "some error",
+      });
+      dispatch(action);
+    }
   };
 };
 
 export const logoutThunkCreator = () => {
-  return (dispatch) => {
-    authAPI.logout().then((data) => {
-      if (data.resultCode === 0) {
-        dispatch(setUserData(null, null, null, false));
-      }
-    });
+  return async (dispatch) => {
+    let response = await authAPI.logout();
+    if (response.resultCode === 0) {
+      dispatch(setUserData(null, null, null, false));
+    }
   };
 };
 

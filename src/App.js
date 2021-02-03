@@ -10,7 +10,7 @@ import Login from "./components/Login/Login";
 import { connect } from "react-redux";
 import { getAuthDataThunkCreator } from "./redux/reducer/authReducer";
 import { initializeThunkCreator } from "./redux/reducer/appReducer";
-import Preloader from "./components/UI/preloader/Preloader";
+import Preloader from "./components/common/preloader/Preloader";
 
 class App extends Component {
   componentDidMount() {
