@@ -1,64 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import s from "./Paginator.module.css";
 
-let Paginator = (props) => {
-  let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
-  let currentPage = props.currentPage;
-
-  let startPage;
-  let endPage;
-  if (pagesCount <= 10) {
-    startPage = 1;
-    endPage = pagesCount;
-  } else if (pagesCount > 10) {
-    if (currentPage > 6) {
-      startPage = currentPage - 5;
-      endPage = currentPage + 4;
-    }
-    startPage = 1;
-    endPage = 10;
-  }
+let Paginator = ({
+  totalUsersCount,
+  pageSize,
+  portionSize = 10,
+  onPageChanged,
+  currentPage,
+}) => {
+  let pagesCount = Math.ceil(totalUsersCount / portionSize);
 
   let pages = [];
-  for (let i = startPage; i <= endPage; i++) {
+  for (let i = 0; i < pagesCount; i++) {
     pages.push(i);
   }
 
+  let portionCount = Math.ceil(pagesCount / portionSize);
+  let [portionNumber, setPortionNumber] = useState(1);
+  let leftPortionNumber = (portionNumber - 1) * portionSize + 1;
+  let rightPortionNumber = portionNumber * portionSize;
+  console.log(leftPortionNumber);
+  console.log(rightPortionNumber);
+
   return (
     <div>
-      {pages.map((p) => {
-        return (
-          <span
-            className={
-              props.currentPage === p ? s.selectedPage + " " + s.page : s.page
-            }
-            onClick={() => {
-              props.onPageChanged(p);
-            }}
-            key={p}
-          >
-            {" " + p + " "}
-          </span>
-        );
-      })}
-      {pagesCount > 10 ? (
-        <>
-          ...
-          <span
-            className={
-              props.currentPage === pagesCount
-                ? s.selectedPage + " " + s.page
-                : s.page
-            }
-            onClick={() => {
-              props.onPageChanged(pagesCount);
-            }}
-            key={pagesCount}
-          >
-            {" " + pagesCount + " "}
-          </span>
-        </>
-      ) : null}
+      {portionNumber > 1 && (
+        <button
+          onClick={() => {
+            setPortionNumber(portionNumber - 1);
+          }}
+        >
+          PREV
+        </button>
+      )}
+      {pages
+        .filter((p) => p >= leftPortionNumber && p <= rightPortionNumber)
+        .map((p) => {
+          return (
+            <span
+              className={
+                currentPage === p ? s.selectedPage + " " + s.page : s.page
+              }
+              onClick={() => {
+                onPageChanged(p);
+              }}
+              key={p}
+            >
+              {p}
+            </span>
+          );
+        })}
+      {portionCount > portionNumber && (
+        <button
+          onClick={() => {
+            setPortionNumber(portionNumber + 1);
+          }}
+        >
+          NEXT
+        </button>
+      )}
     </div>
   );
 };

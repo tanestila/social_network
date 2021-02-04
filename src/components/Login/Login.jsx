@@ -5,7 +5,7 @@ import { maxLengthCreator, required } from "../../utils/validators";
 import { Input } from "../common/FormsControls/FormsControls";
 import { loginThunkCreator } from "../../redux/reducer/authReducer";
 import { Redirect } from "react-router-dom";
-import s from "../FormsControls/FormsControls.module.css";
+import s from "./Login.module.css";
 
 let maxLengthCreator20 = maxLengthCreator(20);
 
