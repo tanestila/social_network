@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
-import { Route } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import DialogsContainer from "./components/Dialogs/DialogsContainer";
 import UsersContainer from "./components/Users/UsersContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
@@ -13,8 +13,20 @@ import { initializeThunkCreator } from "./redux/reducer/appReducer";
 import Preloader from "./components/common/preloader/Preloader";
 
 class App extends Component {
+  catchAllUnhandledErrors = (reason, promise) => {
+    alert("Some error");
+  };
+
   componentDidMount() {
     this.props.initialize();
+    window.addEventListener("unhandledrejection", this.catchAllUnhandledErrors);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      "unhandledrejection",
+      this.catchAllUnhandledErrors
+    );
   }
 
   render() {
@@ -25,10 +37,14 @@ class App extends Component {
           <HeaderContainer />
           <Navbar />
           <div className="app-wrapper-content">
-            <Route exact path="/dialogs" component={DialogsContainer} />
-            <Route path="/profile/:userId?" component={ProfileContainer} />
-            <Route path="/users" component={UsersContainer} />
-            <Route path="/login" component={Login} />
+            <Switch>
+              <Route exact path="/dialogs" component={DialogsContainer} />
+              <Route path="/profile/:userId?" component={ProfileContainer} />
+              <Route path="/users" component={UsersContainer} />
+              <Route path="/login" component={Login} />
+              <Redirect exact from="/" to="/profile" />
+              <Route path="*" render={() => <div>404 not found</div>} />
+            </Switch>
           </div>
         </div>
       );

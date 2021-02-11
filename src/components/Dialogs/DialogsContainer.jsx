@@ -3,6 +3,7 @@ import { compose } from "redux";
 import { sendMessageActionCreator } from "../../redux/reducer/dialogsReducer";
 import { withAuthRedirect } from "../hoc/AuthRedirect";
 import Dialogs from "./Dialogs";
+import { getDialogs } from "../../redux/reducer/dialogsReducer";
 
 const mapStateToProps = (state) => {
   return {
@@ -15,6 +16,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addPost: (body) => {
       dispatch(sendMessageActionCreator(body));
+    },
+    getDialogs: () => {
+      dispatch(getDialogs());
     },
   };
 };

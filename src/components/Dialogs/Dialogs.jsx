@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Field, reduxForm } from "redux-form";
+import { dialogsAPI } from "../../api/api";
 import { maxLengthCreator, required } from "../../utils/validators";
 import { Textarea } from "../common/FormsControls/FormsControls";
 import DialogItem from "./DialogItem/DialogItem";
@@ -31,6 +32,10 @@ const AddMessageReduxForm = reduxForm({ form: "dialogAddMessageForm" })(
 );
 
 const Dialogs = (props) => {
+  useEffect(() => {
+    props.getDialogs();
+  }, []);
+
   let addNewMessage = (values) => {
     props.addPost(values.newMessageBody);
   };

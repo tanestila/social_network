@@ -19,8 +19,6 @@ let Paginator = ({
   let [portionNumber, setPortionNumber] = useState(1);
   let leftPortionNumber = (portionNumber - 1) * portionSize + 1;
   let rightPortionNumber = portionNumber * portionSize;
-  console.log(leftPortionNumber);
-  console.log(rightPortionNumber);
 
   return (
     <div>

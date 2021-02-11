@@ -1,13 +1,15 @@
 import { stopSubmit } from "redux-form";
-import { authAPI } from "../../api/api";
+import { authAPI, securityAPI } from "../../api/api";
 
 const SET_USER_DATA = "auth/SET_USER_DATA";
+const GET_CAPTCHA_URL_SUCCESS = "auth/GET_CAPTCHA_URL_SUCCESS";
 
 let initialState = {
   userId: null,
   email: null,
   login: null,
   isAuth: false,
+  captchaUrl: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -17,6 +19,11 @@ const authReducer = (state = initialState, action) => {
         ...state,
         ...action.payload,
       };
+    case GET_CAPTCHA_URL_SUCCESS:
+      return {
+        ...state,
+        captchaUrl: action.captchaUrl,
+      };
     default:
       return state;
   }
@@ -25,6 +32,11 @@ const authReducer = (state = initialState, action) => {
 export const setUserData = (userId, email, login, isAuth) => ({
   type: SET_USER_DATA,
   payload: { userId, email, login, isAuth },
+});
+
+export const getCaptchaUrlSuccess = (captchaUrl) => ({
+  type: GET_CAPTCHA_URL_SUCCESS,
+  captchaUrl,
 });
 
 export const getAuthDataThunkCreator = () => {
@@ -43,12 +55,16 @@ export const getAuthDataThunkCreator = () => {
   };
 };
 
-export const loginThunkCreator = (email, password, rememberMe) => {
+export const loginThunkCreator = (email, password, rememberMe, captcha) => {
   return async (dispatch) => {
-    let response = await authAPI.login(email, password, rememberMe);
+    let response = await authAPI.login(email, password, rememberMe, captcha);
     if (response.resultCode === 0) {
       dispatch(getAuthDataThunkCreator());
     } else {
+      if (response.resultCode === 10) {
+        dispatch(getCaptchaUrlThunkCreator());
+      }
+
       let action = stopSubmit("login", {
         _error:
           response.messages.length > 0 ? response.messages[0] : "some error",
@@ -64,6 +80,14 @@ export const logoutThunkCreator = () => {
     if (response.resultCode === 0) {
       dispatch(setUserData(null, null, null, false));
     }
+  };
+};
+
+export const getCaptchaUrlThunkCreator = () => {
+  return async (dispatch) => {
+    let response = await securityAPI.getCaptchaUrl();
+    const captchaUrl = response.url;
+    dispatch(getCaptchaUrlSuccess(captchaUrl));
   };
 };
 

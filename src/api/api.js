@@ -36,18 +36,42 @@ export const profileAPI = {
       .put(`profile/status`, { status })
       .then((response) => response.data);
   },
+  savePhoto(file) {
+    let formData = new FormData();
+    formData.append("image", file);
+    return instance
+      .put(`profile/photo`, formData)
+      .then((response) => response.data);
+  },
+  saveProfile(profile) {
+    return instance.put(`profile`, profile).then((response) => response.data);
+  },
 };
 
 export const authAPI = {
   me() {
     return instance.get(`auth/me`).then((response) => response.data);
   },
-  login(email, password, rememberMe = false) {
+  login(email, password, rememberMe = false, captcha) {
     return instance
-      .post(`auth/login`, { email, password, rememberMe })
+      .post(`auth/login`, { email, password, rememberMe, captcha })
       .then((response) => response.data);
   },
   logout() {
     return instance.delete(`auth/login`).then((response) => response.data);
+  },
+};
+
+export const securityAPI = {
+  getCaptchaUrl() {
+    return instance
+      .get(`security/get-captcha-url`)
+      .then((response) => response.data);
+  },
+};
+
+export const dialogsAPI = {
+  getDialogs() {
+    return instance.get(`dialogs`).then((response) => response.data);
   },
 };
