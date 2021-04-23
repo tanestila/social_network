@@ -1,4 +1,4 @@
-# social_network
+# social_network (2020)
 
 * project from the training course it-kamasutra
 * react
